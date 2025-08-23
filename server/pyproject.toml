@@ -1,18 +1,13 @@
-[project]
-name = "pipecat-client-server-example"
+[tool.poetry]
+name = "pcc"
 version = "0.1.0"
-description = "Client/server web example using Pipecat"
-requires-python = ">=3.10"
-dependencies = [
-    "pipecat-ai[webrtc,silero,deepgram,openai,cartesia,runner]>=0.0.77",
-]
+description = "Jake testing pipecat cloud"
+authors = ["Jake Gordon <jakesgordon@gmail.com>"]
+readme = "README.md"
+package-mode = false
 
-[dependency-groups]
-dev = [
-    "ruff~=0.12.1",
-]
-
-[tool.ruff]
-line-length = 100
-[tool.ruff.lint]
-select = ["I"]
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+pipecat-ai = {extras = ["silero", "cartesia", "deepgram", "openai", "daily", "webrtc", "runner"], version = "^0.0.80"}
+pipecatcloud = "^0.2.3"
+python-dotenv = "1.0.1"
