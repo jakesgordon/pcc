@@ -5,7 +5,7 @@ Learn how to build web applications using Pipecat's client/server architecture. 
 This example demonstrates:
 
 - Server-side bot running with Pipecat
-- React client using [Pipecat's client SDK](https://docs.pipecat.ai/client/introduction)
+- Client-side using [Pipecat's client SDK](https://docs.pipecat.ai/client/introduction)
 - Real-time voice communication between client and server
 - UI components from [voice-ui-kit](https://github.com/pipecat-ai/voice-ui-kit) for common voice interface patterns
 
