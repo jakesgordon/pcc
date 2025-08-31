@@ -115,7 +115,7 @@ class ExperienceProcessor(FrameProcessor):
     async def process_frame(self, frame, direction):
         await super().process_frame(frame, direction)
         # TODO
-        await self.push_frame(frame)
+        await self.push_frame(frame, direction)
 
 #==================================================================================================
 
