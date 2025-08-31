@@ -1,5 +1,6 @@
 import os
 import aiohttp
+import sys
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -25,8 +26,18 @@ load_dotenv(override=True)
 
 #==================================================================================================
 
+def tune_logger():
+    logger.remove()
+    logger.add(sys.stderr, level="INFO")
+
+def trace(message):
+    logger.success(f"[*** TRACE ***] {message}")
+
+#==================================================================================================
+
 async def run_bot(transport: BaseTransport):
-    logger.info(f"Starting bot")
+    tune_logger()
+    trace("STARTING BOT")
 
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
     tts = CartesiaTTSService(
@@ -67,19 +78,21 @@ async def run_bot(transport: BaseTransport):
             enable_usage_metrics=True,
             allow_interruptions=True,
         ),
-        observers=[RTVIObserver(rtvi)],
+        observers=[
+            RTVIObserver(rtvi),
+        ],
     )
 
     @transport.event_handler("on_client_connected")
     async def on_client_connected(transport, client):
-        logger.info(f"Client connected")
+        trace("CLIENT CONNECTED")
         # Kick off the conversation.
         messages.append({"role": "system", "content": "Say hello and briefly introduce yourself."})
         await task.queue_frames([context_aggregator.user().get_context_frame()])
 
     @transport.event_handler("on_client_disconnected")
     async def on_client_disconnected(transport, client):
-        logger.info(f"Client disconnected")
+        trace("CLIENT DISCONNECTED")
         await task.cancel()
 
     runner = PipelineRunner(handle_sigint=False)
