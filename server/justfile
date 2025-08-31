@@ -1,7 +1,0 @@
-set dotenv-load := true
-
-_default:
-  just --list
-
-@docker-build:
-  docker buildx build --platform=linux/arm64 -t "jakesgordon/jakes-test-bot:latest" --load .

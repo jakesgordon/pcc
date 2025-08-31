@@ -25,12 +25,10 @@ async def run_bot(transport: BaseTransport):
     logger.info(f"Starting bot")
 
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
-
     tts = CartesiaTTSService(
         api_key=os.getenv("CARTESIA_API_KEY"),
         voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     )
-
     llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"))
 
     messages = [
@@ -63,6 +61,7 @@ async def run_bot(transport: BaseTransport):
         params=PipelineParams(
             enable_metrics=True,
             enable_usage_metrics=True,
+            allow_interruptions=True,
         ),
         observers=[RTVIObserver(rtvi)],
     )
