@@ -787,14 +787,14 @@ standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[stand
 
 [[package]]
 name = "fastapi-cli"
-version = "0.0.9"
+version = "0.0.10"
 description = "Run and manage FastAPI apps from the command line with FastAPI CLI. 🚀"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "fastapi_cli-0.0.9-py3-none-any.whl", hash = "sha256:b2ffc90a43f2196b56fdfb137e6e959c57c5630beb1ff8dcaa1cc398b2461a60"},
-    {file = "fastapi_cli-0.0.9.tar.gz", hash = "sha256:c4d4404395651b8da59c3b28a526c098f9e290848aba63355e12d23cc5e0b7f8"},
+    {file = "fastapi_cli-0.0.10-py3-none-any.whl", hash = "sha256:04bef56b49f7357c6c4acd4f793b4433ed3f511be431ed0af68db6d3f8bd44b3"},
+    {file = "fastapi_cli-0.0.10.tar.gz", hash = "sha256:85a93df72ff834c3d2a356164512cabaf8f093d50eddad9309065a9c9ac5193a"},
 ]
 
 [package.dependencies]
@@ -2122,14 +2122,14 @@ xmp = ["defusedxml"]
 
 [[package]]
 name = "pipecat-ai"
-version = "0.0.80"
+version = "0.0.82"
 description = "An open source framework for voice (and multimodal) assistants"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "pipecat_ai-0.0.80-py3-none-any.whl", hash = "sha256:c827bc51289fb627fd9a3766526f6a71870357795145dfde819b9b4259c18578"},
-    {file = "pipecat_ai-0.0.80.tar.gz", hash = "sha256:93a2a40a5c1eae17ec92e8237ee8a387cbad4c6e64d9a0909aed97d87804f0e1"},
+    {file = "pipecat_ai-0.0.82-py3-none-any.whl", hash = "sha256:2fc2bb8b5282939ec36d1fc80bc952b43128ba2de4191425d4261cf0a6f0c083"},
+    {file = "pipecat_ai-0.0.82.tar.gz", hash = "sha256:b44a20ca292fd91ff1687beb68be62dbf94c3aef0ce21081b5c29a5a8864d044"},
 ]
 
 [package.dependencies]
@@ -2137,7 +2137,7 @@ aiohttp = ">=3.11.12,<4"
 aiortc = {version = ">=1.11.0,<1.12.0", optional = true, markers = "extra == \"webrtc\""}
 audioop-lts = {version = ">=0.2.1,<0.3.0", markers = "python_version >= \"3.13\""}
 cartesia = {version = ">=2.0.3,<2.1.0", optional = true, markers = "extra == \"cartesia\""}
-daily-python = {version = ">=0.19.6,<0.20.0", optional = true, markers = "extra == \"daily\""}
+daily-python = {version = ">=0.19.8,<0.20.0", optional = true, markers = "extra == \"daily\""}
 deepgram-sdk = {version = ">=4.7.0,<4.8.0", optional = true, markers = "extra == \"deepgram\""}
 docstring_parser = ">=0.16,<1.0"
 fastapi = {version = ">=0.115.6,<0.117.0", optional = true, markers = "extra == \"runner\""}
@@ -2158,6 +2158,7 @@ python-dotenv = {version = ">=1.0.0,<2.0.0", optional = true, markers = "extra =
 resampy = ">=0.4.3,<0.5.0"
 soxr = ">=0.5.0,<0.6.0"
 uvicorn = {version = ">=0.32.0,<1.0.0", optional = true, markers = "extra == \"runner\""}
+wait_for2 = {version = ">=0.4.1", markers = "python_version < \"3.12\""}
 websockets = {version = ">=13.1,<15.0", optional = true, markers = "extra == \"cartesia\" or extra == \"openai\""}
 
 [package.extras]
@@ -2168,7 +2169,7 @@ aws = ["aioboto3 (>=15.0.0,<15.1.0)", "websockets (>=13.1,<15.0)"]
 aws-nova-sonic = ["aws_sdk_bedrock_runtime (>=0.0.2,<0.1.0) ; python_version >= \"3.12\""]
 azure = ["azure-cognitiveservices-speech (>=1.42.0,<1.43.0)"]
 cartesia = ["cartesia (>=2.0.3,<2.1.0)", "websockets (>=13.1,<15.0)"]
-daily = ["daily-python (>=0.19.6,<0.20.0)"]
+daily = ["daily-python (>=0.19.8,<0.20.0)"]
 deepgram = ["deepgram-sdk (>=4.7.0,<4.8.0)"]
 elevenlabs = ["websockets (>=13.1,<15.0)"]
 fal = ["fal-client (>=0.5.9,<0.6.0)"]
@@ -2197,6 +2198,7 @@ playht = ["websockets (>=13.1,<15.0)"]
 rime = ["websockets (>=13.1,<15.0)"]
 riva = ["nvidia-riva-client (>=2.21.1,<2.22.0)"]
 runner = ["fastapi (>=0.115.6,<0.117.0)", "pipecat-ai-small-webrtc-prebuilt (>=1.0.0)", "python-dotenv (>=1.0.0,<2.0.0)", "uvicorn (>=0.32.0,<1.0.0)"]
+sarvam = ["websockets (>=13.1,<15.0)"]
 sentry = ["sentry-sdk (>=2.23.1,<2.24.0)"]
 silero = ["onnxruntime (>=1.20.1,<1.21.0)"]
 simli = ["simli-ai (>=0.1.10,<0.2.0)"]
@@ -3722,6 +3724,19 @@ docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "sphinxc
 test = ["aiohttp (>=3.10.5)", "flake8 (>=5.0,<6.0)", "mypy (>=0.800)", "psutil", "pyOpenSSL (>=23.0.0,<23.1.0)", "pycodestyle (>=2.9.0,<2.10.0)"]
 
 [[package]]
+name = "wait-for2"
+version = "0.4.1"
+description = "Asyncio wait_for that can handle simultaneous cancellation and future completion."
+optional = false
+python-versions = "*"
+groups = ["main"]
+markers = "python_version < \"3.12\""
+files = [
+    {file = "wait_for2-0.4.1-py3-none-any.whl", hash = "sha256:c694503e8c7420929e8a86bcffd9b00d55acaec2c14223a2b1e92bdc2ebf2154"},
+    {file = "wait_for2-0.4.1.tar.gz", hash = "sha256:7f415415d21845c441391d6b4abe68f5959d2c0fbe927c2f61be28a297bc2acb"},
+]
+
+[[package]]
 name = "watchfiles"
 version = "1.1.0"
 description = "Simple, modern and high performance file watching and code reload in python."
@@ -4069,4 +4084,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "925c4710b22d24a65885fc0dbf16a4e23782c4d932232a8ee7c75a2ef201b736"
+content-hash = "78b61dc1f25b1a072ca74d8219301a1ec0c1ccf89fa246bb9fbfdbf514f0cf4e"

@@ -14,7 +14,9 @@ function onTrackStarted(track: MediaStreamTrack, participant?: Participant) {
 type DebugFrameMessage = {
   type: "debug-frame",
   payload: {
-    frame: string
+    frame: string,
+    details: any,
+    dir: string,
   }
 }
 
@@ -23,7 +25,7 @@ type ServerMessage =
 
 function onServerMessage(message: ServerMessage) {
   if (message.type === "debug-frame") {
-    console.log(message.payload.frame)
+    console.log(message.payload.frame, message.payload.dir, message.payload.details)
   } else {
     console.log("unknown message", message)
   }
