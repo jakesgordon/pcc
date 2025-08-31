@@ -1,9 +1,13 @@
 import os
+import aiohttp
 
 from dotenv import load_dotenv
 from loguru import logger
 
 from pipecat.audio.vad.silero import SileroVADAnalyzer
+from pipecat.audio.vad.vad_analyzer import VADParams
+from pipecat.audio.turn.smart_turn.fal_smart_turn import FalSmartTurnAnalyzer
+from pipecat.audio.turn.smart_turn.base_smart_turn import SmartTurnParams
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
@@ -86,25 +90,48 @@ async def run_bot(transport: BaseTransport):
 
 async def bot(runner_args: RunnerArguments):
 
-    transport_params = {
-        # DEVELOPMENT
-        "webrtc": lambda: TransportParams(
-            audio_in_enabled=True,
-            audio_out_enabled=True,
-            vad_analyzer=SileroVADAnalyzer(),
-        ),
+    async with aiohttp.ClientSession() as session:
 
-        # PRODUCTION
-        "daily": lambda: DailyParams(
-            audio_in_enabled=True,
-            audio_out_enabled=True,
-            vad_analyzer=SileroVADAnalyzer(),
-        ),
-    }
+        vad_analyzer = SileroVADAnalyzer(
+            params=VADParams(
+                confidence=0.7,
+                start_secs=0.2,
+                stop_secs=2,
+                min_volume=0.6,
+            ),
+        )
 
-    transport = await create_transport(runner_args, transport_params)
+        smart_turn_analyzer = FalSmartTurnAnalyzer(
+            api_key = os.getenv("FAL_API_KEY"),
+            aiohttp_session=session,
+            params=SmartTurnParams(
+                stop_secs=3.0,
+                pre_speech_ms=0.0,
+                max_duration_secs=8.0,
+            ),
+        )
 
-    await run_bot(transport)
+        transport_params = {
+            # DEVELOPMENT
+            "webrtc": lambda: TransportParams(
+                audio_in_enabled=True,
+                audio_out_enabled=True,
+                vad_analyzer=vad_analyzer,
+                smart_turn_analyzer=smart_turn_analyzer,
+            ),
+
+            # PRODUCTION
+            "daily": lambda: DailyParams(
+                audio_in_enabled=True,
+                audio_out_enabled=True,
+                vad_analyzer=vad_analyzer,
+                smart_turn_analyzer=smart_turn_analyzer,
+            ),
+        }
+
+        transport = await create_transport(runner_args, transport_params)
+
+        await run_bot(transport)
 
 #==================================================================================================
 

@@ -4,10 +4,11 @@ _default:
   just --list
 
 @install:
-  cd client && bun install
+  cd client && npm install
+  cd server && poetry install
 
 @client:
-  cd client && bun run dev
+  cd client && npm run dev
 
 @server:
   cd server && poetry run python bot.py

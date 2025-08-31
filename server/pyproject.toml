@@ -8,6 +8,6 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
-pipecat-ai = {extras = ["silero", "cartesia", "deepgram", "openai", "daily", "webrtc", "runner"], version = "^0.0.80"}
+pipecat-ai = {extras = ["silero", "cartesia", "deepgram", "openai", "daily", "webrtc", "runner", "remote-smart-turn"], version = "^0.0.80"}
 pipecatcloud = "^0.2.3"
 python-dotenv = "1.0.1"
