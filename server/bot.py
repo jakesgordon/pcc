@@ -9,11 +9,13 @@ from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.audio.turn.smart_turn.fal_smart_turn import FalSmartTurnAnalyzer
 from pipecat.audio.turn.smart_turn.base_smart_turn import SmartTurnParams
+from pipecat.frames.frames import BotStartedSpeakingFrame, BotStoppedSpeakingFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
 from pipecat.processors.aggregators.openai_llm_context import OpenAILLMContext
-from pipecat.processors.frameworks.rtvi import RTVIConfig, RTVIObserver, RTVIProcessor
+from pipecat.processors.frame_processor import FrameProcessor
+from pipecat.processors.frameworks.rtvi import RTVIConfig, RTVIObserver, RTVIProcessor, RTVIServerMessageFrame
 from pipecat.runner.types import DailyRunnerArguments, RunnerArguments, SmallWebRTCRunnerArguments
 from pipecat.runner.utils import create_transport
 from pipecat.services.cartesia.tts import CartesiaTTSService
@@ -32,6 +34,36 @@ def tune_logger():
 
 def trace(message):
     logger.success(f"[*** TRACE ***] {message}")
+
+#==================================================================================================
+
+class ExperienceProcessor(FrameProcessor):
+    def __init__(self, rtvi):
+        super().__init__()
+        self.rtvi = rtvi
+
+    async def process_frame(self, frame, direction):
+        await super().process_frame(frame, direction)
+
+        if isinstance(frame, BotStartedSpeakingFrame):
+            trace("BOT STARTED SPEAKING")
+            await self.rtvi.push_frame(RTVIServerMessageFrame(
+                data={
+                    "type": "bot-started-speaking",
+                    "payload": {"yolo": "hello"},
+                }
+            ))
+
+        elif isinstance(frame, BotStoppedSpeakingFrame):
+            trace("BOT STOPPED SPEAKING")
+            await self.rtvi.push_frame(RTVIServerMessageFrame(
+                data={
+                    "type": "bot-stopped-speaking",
+                    "payload": {"yolo": "goodbye"},
+                }
+            ))
+
+        await self.push_frame(frame)
 
 #==================================================================================================
 
@@ -58,11 +90,14 @@ async def run_bot(transport: BaseTransport):
 
     rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
 
+    experience = ExperienceProcessor(rtvi)
+
     pipeline = Pipeline(
         [
             transport.input(),  # Transport user input
             rtvi,  # RTVI processor
             stt,
+            experience, # OUR CUSTOM EXPERIENCE
             context_aggregator.user(),  # User responses
             llm,  # LLM
             tts,  # TTS
