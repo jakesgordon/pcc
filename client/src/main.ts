@@ -11,32 +11,21 @@ function onTrackStarted(track: MediaStreamTrack, participant?: Participant) {
   audioElement.play();
 }
 
-
-type BotStartedSpeakingMessage = {
-  type: "bot-started-speaking",
+type DebugFrameMessage = {
+  type: "debug-frame",
   payload: {
-    yolo: string
-  }
-}
-
-type BotStoppedSpeakingMessage = {
-  type: "bot-stopped-speaking",
-  payload: {
-    yolo: string
+    frame: string
   }
 }
 
 type ServerMessage =
-  | BotStartedSpeakingMessage
-  | BotStoppedSpeakingMessage
+  | DebugFrameMessage
 
 function onServerMessage(message: ServerMessage) {
-  if (message.type === "bot-started-speaking") {
-    console.log("🤖 Bot started speaking", message.payload.yolo)
-  } else if (message.type === "bot-stopped-speaking") {
-    console.log("🤖 Bot stopped speaking", message.payload.yolo)
+  if (message.type === "debug-frame") {
+    console.log(message.payload.frame)
   } else {
-    console.error("unexpected server message", message)
+    console.log("unknown message", message)
   }
 }
 

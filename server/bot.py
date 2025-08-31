@@ -9,7 +9,6 @@ from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.audio.turn.smart_turn.fal_smart_turn import FalSmartTurnAnalyzer
 from pipecat.audio.turn.smart_turn.base_smart_turn import SmartTurnParams
-from pipecat.frames.frames import BotStartedSpeakingFrame, BotStoppedSpeakingFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
@@ -24,16 +23,49 @@ from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.transports.services.daily import DailyParams
 
+from pipecat.frames.frames import (
+    BotSpeakingFrame,
+    BotStartedSpeakingFrame,
+    BotStoppedSpeakingFrame,
+    InputAudioRawFrame,
+    LLMFullResponseEndFrame,
+    LLMFullResponseStartFrame,
+    LLMMessagesAppendFrame,
+    LLMMessagesFrame,
+    LLMMessagesUpdateFrame,
+    LLMTextFrame,
+    MetricsFrame,
+    OutputTransportReadyFrame,
+    SpeechControlParamsFrame,
+    StartFrame,
+    StartInterruptionFrame,
+    StopInterruptionFrame,
+    TTSTextFrame,
+    TextFrame,
+    TranscriptionFrame,
+    TranscriptionUpdateFrame,
+    TransportMessageUrgentFrame,
+    UserStartedSpeakingFrame,
+    UserStoppedSpeakingFrame,
+)
+
 load_dotenv(override=True)
 
 #==================================================================================================
 
 def tune_logger():
     logger.remove()
-    logger.add(sys.stderr, level="INFO")
+    logger.add(sys.stderr, format="<level>{level}</level> | <cyan>{message}</cyan>", level="INFO")
 
-def trace(message):
-    logger.success(f"[*** TRACE ***] {message}")
+NEVER_TRACE = (
+    BotSpeakingFrame,
+    InputAudioRawFrame,
+    MetricsFrame,
+    OutputTransportReadyFrame,
+    RTVIServerMessageFrame,
+    SpeechControlParamsFrame,
+    TransportMessageUrgentFrame,
+)
 
 #==================================================================================================
 
@@ -42,26 +74,24 @@ class ExperienceProcessor(FrameProcessor):
         super().__init__()
         self.rtvi = rtvi
 
+    async def trace(self, frame):
+        name = type(frame).__name__
+        details = f"{frame}"
+        logger.info(details)
+        await self.rtvi.push_frame(RTVIServerMessageFrame(
+            data={
+                "type": "debug-frame",
+                "payload": {
+                    "frame": details
+                },
+            }
+        ))
+
     async def process_frame(self, frame, direction):
         await super().process_frame(frame, direction)
 
-        if isinstance(frame, BotStartedSpeakingFrame):
-            trace("BOT STARTED SPEAKING")
-            await self.rtvi.push_frame(RTVIServerMessageFrame(
-                data={
-                    "type": "bot-started-speaking",
-                    "payload": {"yolo": "hello"},
-                }
-            ))
-
-        elif isinstance(frame, BotStoppedSpeakingFrame):
-            trace("BOT STOPPED SPEAKING")
-            await self.rtvi.push_frame(RTVIServerMessageFrame(
-                data={
-                    "type": "bot-stopped-speaking",
-                    "payload": {"yolo": "goodbye"},
-                }
-            ))
+        if not isinstance(frame, NEVER_TRACE):
+            await self.trace(frame)
 
         await self.push_frame(frame)
 
@@ -69,7 +99,7 @@ class ExperienceProcessor(FrameProcessor):
 
 async def run_bot(transport: BaseTransport):
     tune_logger()
-    trace("STARTING BOT")
+    logger.info("STARTING BOT")
 
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
     tts = CartesiaTTSService(
@@ -120,14 +150,14 @@ async def run_bot(transport: BaseTransport):
 
     @transport.event_handler("on_client_connected")
     async def on_client_connected(transport, client):
-        trace("CLIENT CONNECTED")
+        logger.info("CLIENT CONNECTED")
         # Kick off the conversation.
         messages.append({"role": "system", "content": "Say hello and briefly introduce yourself."})
         await task.queue_frames([context_aggregator.user().get_context_frame()])
 
     @transport.event_handler("on_client_disconnected")
     async def on_client_disconnected(transport, client):
-        trace("CLIENT DISCONNECTED")
+        logger.info("CLIENT DISCONNECTED")
         await task.cancel()
 
     runner = PipelineRunner(handle_sigint=False)
