@@ -16,7 +16,6 @@ type DebugFrameMessage = {
   payload: {
     frame: string,
     details: any,
-    dir: string,
   }
 }
 
@@ -25,7 +24,11 @@ type ServerMessage =
 
 function onServerMessage(message: ServerMessage) {
   if (message.type === "debug-frame") {
-    console.log(message.payload.frame, message.payload.dir, message.payload.details)
+    if (message.payload.details) {
+      console.log(`${message.payload.frame} > ${message.payload.details}`)
+    } else {
+      console.log(message.payload.frame)
+    }
   } else {
     console.log("unknown message", message)
   }

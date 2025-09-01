@@ -112,10 +112,38 @@ class ExperienceObserver(BaseObserver):
 #==================================================================================================
 
 class ExperienceProcessor(FrameProcessor):
+    def __init__(self, rtvi):
+        super().__init__()
+        self.rtvi = rtvi
+
     async def process_frame(self, frame, direction):
         await super().process_frame(frame, direction)
-        # TODO
+
+        if isinstance(frame, OpenAILLMContextFrame):
+            await self.trace(frame, [f"{m["role"]}> {m["content"]}" for m in frame.context.messages])
+        elif isinstance(frame, TextFrame):
+            await self.trace(frame, frame.text)
+        elif not isinstance(frame, NEVER_TRACE):
+            await self.trace(frame)
+
         await self.push_frame(frame, direction)
+
+    async def trace(self, frame, details = None):
+        name = frame.__class__.__name__
+        if details is None:
+            logger.info(f"{name}")
+        else:
+            logger.info(f"{name}: {details}")
+
+        await self.rtvi.push_frame(RTVIServerMessageFrame(
+            data={
+                "type": "debug-frame",
+                "payload": {
+                    "frame": name,
+                    "details": details,
+                },
+            }
+        ))
 
 #==================================================================================================
 
@@ -144,7 +172,7 @@ async def run_bot(transport: BaseTransport):
     context = OpenAILLMContext(messages)
     context_aggregator = llm.create_context_aggregator(context)
     rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
-    experience = ExperienceProcessor()
+    experience = ExperienceProcessor(rtvi)
 
     pipeline = Pipeline(
         [
@@ -169,7 +197,7 @@ async def run_bot(transport: BaseTransport):
         ),
         observers=[
             RTVIObserver(rtvi),
-            ExperienceObserver(rtvi),
+            # ExperienceObserver(rtvi),
         ],
     )
 
