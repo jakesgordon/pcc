@@ -18,7 +18,7 @@ from pipecat.processors.frame_processor import Frame, FrameProcessor, FrameDirec
 from pipecat.processors.frameworks.rtvi import RTVIConfig, RTVIObserver, RTVIProcessor, RTVIServerMessageFrame
 from pipecat.runner.types import DailyRunnerArguments, RunnerArguments, SmallWebRTCRunnerArguments
 from pipecat.runner.utils import create_transport
-from pipecat.services.cartesia.tts import CartesiaTTSService
+from pipecat.services.elevenlabs.tts import ElevenLabsTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.base_transport import BaseTransport, TransportParams
@@ -71,6 +71,9 @@ NEVER_TRACE = (
     TTSAudioRawFrame,
     TransportMessageUrgentFrame,
 )
+
+WOMAN="21m00Tcm4TlvDq8ikWAM" # Rachel
+MAN="2EiwWnXFnvU5JabPnv8n" # Clyde
 
 #==================================================================================================
 
@@ -152,9 +155,10 @@ async def run_bot(transport: BaseTransport):
     logger.info("STARTING BOT")
 
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
-    tts = CartesiaTTSService(
-        api_key=os.getenv("CARTESIA_API_KEY"),
-        voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
+    tts = ElevenLabsTTSService(
+        api_key=os.getenv("ELEVENLABS_API_KEY"),
+        model=os.getenv("ELEVENLABS_TTS_MODEL", "eleven_flash_v2_5"),
+        voice_id=WOMAN,
     )
     llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"))
 

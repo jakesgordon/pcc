@@ -2159,7 +2159,7 @@ resampy = ">=0.4.3,<0.5.0"
 soxr = ">=0.5.0,<0.6.0"
 uvicorn = {version = ">=0.32.0,<1.0.0", optional = true, markers = "extra == \"runner\""}
 wait_for2 = {version = ">=0.4.1", markers = "python_version < \"3.12\""}
-websockets = {version = ">=13.1,<15.0", optional = true, markers = "extra == \"cartesia\" or extra == \"openai\""}
+websockets = {version = ">=13.1,<15.0", optional = true, markers = "extra == \"cartesia\" or extra == \"elevenlabs\" or extra == \"openai\""}
 
 [package.extras]
 anthropic = ["anthropic (>=0.49.0,<0.50.0)"]
@@ -4084,4 +4084,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "78b61dc1f25b1a072ca74d8219301a1ec0c1ccf89fa246bb9fbfdbf514f0cf4e"
+content-hash = "4267373f6322b145ce4db81c2de06611feef7167fd69fd30d842a2e5e6f54a5e"

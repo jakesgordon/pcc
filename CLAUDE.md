@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Pipecat client/server voice AI application that demonstrates real-time voice communication between a web client and a Python server running Pipecat AI pipelines. The application uses WebRTC for real-time communication and integrates with Deepgram (STT), OpenAI (LLM), and Cartesia (TTS) services.
+This is a Pipecat client/server voice AI application that demonstrates real-time voice communication between a web client and a Python server running Pipecat AI pipelines. The application uses WebRTC for real-time communication and integrates with Deepgram (STT), OpenAI (LLM), and ElevenLabs (TTS) services.
 
 ## Architecture
 
@@ -45,7 +45,7 @@ just docker-build
 Required environment variables in `server/.env`:
 - `DEEPGRAM_API_KEY`: For speech-to-text
 - `OPENAI_API_KEY`: For LLM responses  
-- `CARTESIA_API_KEY`: For text-to-speech
+- `ELEVENLABS_API_KEY`: For text-to-speech
 - `FAL_API_KEY`: For smart turn analysis
 
 ## Key Files

@@ -15,7 +15,6 @@ This is the recommended architecture for web applications that need custom inter
 
 - Python 3.10+
 - `npm` installed
-- AI Service API keys for: [Deepgram](https://console.deepgram.com/signup), [OpenAI](https://auth.openai.com/create-account), and [Cartesia](https://play.cartesia.ai/sign-up)
 
 ## Setup
 
@@ -43,7 +42,7 @@ cd pipecat-quickstart-client-server
    ```
    DEEPGRAM_API_KEY=your_deepgram_api_key
    OPENAI_API_KEY=your_openai_api_key
-   CARTESIA_API_KEY=your_cartesia_api_key
+   ELEVENLABS_API_KEY=your_elevenlabs_api_key
    ```
 
 2. Set up a virtual environment and install dependencies
