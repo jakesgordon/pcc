@@ -45,6 +45,7 @@ from pipecat.frames.frames import (
     TTSAudioRawFrame,
     TTSStartedFrame,
     TTSTextFrame,
+    TTSUpdateSettingsFrame,
     TextFrame,
     TranscriptionFrame,
     TranscriptionUpdateFrame,
@@ -122,7 +123,23 @@ class ExperienceProcessor(FrameProcessor):
     async def process_frame(self, frame, direction):
         await super().process_frame(frame, direction)
 
-        if isinstance(frame, OpenAILLMContextFrame):
+        if isinstance(frame, TranscriptionFrame):
+            if "woman" in frame.text.lower():
+                await self.trace(frame, "SWITCH TO WOMAN")
+                await self.push_frame(
+                    TTSUpdateSettingsFrame(settings={
+                      "voice": WOMAN
+                    })
+                )
+            elif "man" in frame.text.lower():
+                await self.trace(frame, "SWITCH TO MAN")
+                await self.push_frame(
+                    TTSUpdateSettingsFrame(settings={
+                      "voice": MAN
+                    })
+                )
+
+        elif isinstance(frame, OpenAILLMContextFrame):
             await self.trace(frame, [f"{m["role"]}> {m["content"]}" for m in frame.context.messages])
         elif isinstance(frame, TextFrame):
             await self.trace(frame, frame.text)
