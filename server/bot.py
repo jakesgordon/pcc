@@ -82,8 +82,11 @@ class ExperienceObserver(BaseObserver):
     def __init__(self, rtvi):
         super().__init__()
         self.rtvi = rtvi
+        self.enabled = False
 
     async def on_push_frame(self, data: FramePushed):
+        if not self.enabled:
+            return
         frame = data.frame
         src  = data.source
         dst  = data.destination
@@ -96,6 +99,8 @@ class ExperienceObserver(BaseObserver):
             await self.trace(frame, dir)
 
     async def trace(self, frame, dir, details = None):
+        if not self.enabled:
+            return
         name = frame.__class__.__name__
         if details is None:
             logger.info(f"{name} : {dir}")
@@ -141,6 +146,8 @@ class ExperienceProcessor(FrameProcessor):
 
         elif isinstance(frame, OpenAILLMContextFrame):
             await self.trace(frame, [f"{m["role"]}> {m["content"]}" for m in frame.context.messages])
+        elif isinstance(frame, LLMTextFrame):
+            await self.trace(frame, frame.text)
         elif isinstance(frame, TextFrame):
             await self.trace(frame, frame.text)
         elif not isinstance(frame, NEVER_TRACE):
@@ -218,7 +225,7 @@ async def run_bot(transport: BaseTransport):
         ),
         observers=[
             RTVIObserver(rtvi),
-            # ExperienceObserver(rtvi),
+            ExperienceObserver(rtvi),
         ],
     )
 
