@@ -11,3 +11,8 @@ python = ">=3.10,<3.14"
 pipecat-ai = {extras = ["silero", "cartesia", "elevenlabs", "deepgram", "openai", "daily", "webrtc", "runner", "remote-smart-turn"], version = "^0.0.82"}
 pipecatcloud = "^0.2.3"
 python-dotenv = "1.0.1"
+attrs = "^25.3.0"
+cattrs = "^25.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"

@@ -54,6 +54,8 @@ from pipecat.frames.frames import (
     UserStoppedSpeakingFrame,
 )
 
+from engine.game import Game
+
 load_dotenv(override=True)
 
 #==================================================================================================
@@ -177,6 +179,9 @@ class ExperienceProcessor(FrameProcessor):
 async def run_bot(transport: BaseTransport):
     tune_logger()
     logger.info("STARTING BOT")
+
+    game = Game.load("data/example.json")
+    logger.warning(game)
 
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
     tts = ElevenLabsTTSService(

@@ -1,0 +1,55 @@
+{
+  "rooms": [
+    {
+      "name": "The First Room",
+      "root": "room",
+      "items": [
+        {
+          "name": "room",
+          "description": "a small dusty study",
+          "traits": ["composite"],
+          "abstract": true
+        },
+        {
+          "name": "desk",
+          "description": "a plain desk",
+          "traits": ["composite", "supporter"]
+        },
+        {
+          "name": "drawer",
+          "description": "a simple drawer",
+          "traits": ["openable", "closable", "container"]
+        },
+        {
+          "name": "key",
+          "description": "a gold key",
+          "traits": ["takeable"]
+        },
+        {
+          "name": "floor",
+          "description": "a plain wooden floor",
+          "traits": ["supporter"]
+        },
+        {
+          "name": "door",
+          "description": "a plain wooden door",
+          "traits": ["openable", "unlockable"],
+          "unlocker": ["key"],
+          "locked": true
+        }
+      ],
+      "locations": [
+        { "item": "desk",   "placement": "belongs", "location": "room"   },
+        { "item": "floor",  "placement": "belongs", "location": "room"   },
+        { "item": "key",    "placement": "in",      "location": "drawer" },
+        { "item": "drawer", "placement": "belongs", "location": "desk"   }
+      ]
+    },
+    {
+      "name": "The Middle Room"
+    },
+    {
+      "name": "The Final Room"
+    }
+  ]
+}
