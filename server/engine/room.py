@@ -6,16 +6,14 @@ from result import Ok, Err
 from .command import Command
 from .event import Event
 from .item import Item, Items
-from .relationship import Relationship, Relationships
-
-#------------------------------------------------------------------------------
+from .relationship import Relationship
 
 class Room:
+
     def __init__(self, name, description, items, relationships):
         self.name = name
         self.description = description
         self.items = items
-        self.relationships = relationships
         self.items.add(Item(
             name="room",
             description=self.description,
@@ -24,8 +22,16 @@ class Room:
         self.events = []
         self.inventory = []
 
+        for relationship in relationships:
+            item = self.items.get(relationship.source)
+            item.append(relationship.target, relationship.kind)
+
+    #--------------------------------------------------------------------------
+
     def item(self, name):
         return self.items.get(name)
+
+    #--------------------------------------------------------------------------
 
     def facts(self, name="room"):
         facts = []
@@ -36,27 +42,24 @@ class Room:
             facts.append(f"The [{name}] is closed")
         if item.is_open:
             facts.append(f"The [{name}] is open")
-        # if self.relationships.is_empty(item):
-        #     facts.append(f"The [{name}] is empty")
+        if item.is_container and len(item.contains) == 0:
+            facts.append(f"The [{name}] is empty")
         if item.is_locked:
             facts.append(f"The [{name}] is locked")
-        for r in self.relationships:
-            if r.source == name:
-                match r.kind:
-                    case Relationship.Kind.HAS:
-                        facts.append(r.fact)
-                        if not r.target in children:
-                            children.append(r.target)
-
-                    case Relationship.Kind.CONTAINS:
-                        if not item.is_closed:
-                            facts.append(r.fact)
-                            if not r.target in children:
-                                children.append(r.target)
-
+        for child in item.has:
+            facts.append(f"The [{name}] has a [{child}]")
+            if not child in children:
+                children.append(child)
+        if not item.is_closed:
+            for child in item.contains:
+                facts.append(f"The [{name}] contains a [{child}]")
+                if not child in children:
+                    children.append(child)
         for c in children:
             facts.extend(self.facts(c))
         return facts
+
+    #--------------------------------------------------------------------------
 
     def execute(self, command):
         match command:
@@ -69,6 +72,8 @@ class Room:
             case _:
                 raise TypeError(f"expected Command, but got {type(command)}")
 
+    #--------------------------------------------------------------------------
+
     def record(self, result):
         if isinstance(result, Ok):
             self.record(result.unwrap())
@@ -80,17 +85,41 @@ class Room:
             self.events.extend(result)
         return result
 
-    @staticmethod
-    def from_json(data):
-        return Room(
-            name=data.get("name"),
-            description=data.get("description"),
-            items=Items.from_json(data.get("items", [])),
-            relationships=[Relationship.from_json(r) for r in data.get("relationships", [])]
-        )
+    #--------------------------------------------------------------------------
 
     @staticmethod
     def load(filename):
         return Room.from_json(json.load(open(filename)))
 
-#------------------------------------------------------------------------------
+    @staticmethod
+    def from_json(data):
+        name = data.get("name")
+        description = data.get("description")
+
+        assert name is not None
+        assert description is not None
+
+        items = Items()
+        for i in data.get("items", []):
+            items.add(Item(
+                name=i.get("name"),
+                description=i.get("description"),
+                traits=[Item.Trait(t) for t in i.get("traits", [])]
+            ))
+
+        relationships = []
+        for r in data.get("relationships", []):
+            relationships.append(Relationship(
+                kind=Relationship.Kind(r.get("relationship") or r.get("kind")),
+                source=r.get("source"),
+                target=r.get("target")
+            ))
+
+        return Room(
+            name=name,
+            description=description,
+            items=items,
+            relationships=relationships,
+        )
+
+    #--------------------------------------------------------------------------

@@ -72,32 +72,32 @@ def test():
     #     "The [key] is a gold key",
     # ]
 
-    # room.execute(Command.Unlock(target="door", using="key"))
-
-    # assert room.facts() == [
-    #     "The [room] contains a [desk]",
-    #     "The [room] has a [floor]",
-    #     "The [room] has a [door]",
-    #     "The [desk] is a plain desk",
-    #     "The [desk] has a [drawer]",
-    #     "The [drawer] is a simple drawer",
-    #     "The [drawer] is open",
-    #     "The [drawer] is empty",
-    #     "The [floor] is a plain wooden floor",
-    #     "The [door] is a plain wooden door with a simple keyhole",
-    #     "The [door] is closed",
-    #     "The [door] is unlocked",
-    #     "The [player] has a [key]",
-    #     "The [key] is a gold key",
+    # # room.execute(Command.Unlock(target="door", using="key"))
+    #
+    # # assert room.facts() == [
+    # #     "The [room] contains a [desk]",
+    # #     "The [room] has a [floor]",
+    # #     "The [room] has a [door]",
+    # #     "The [desk] is a plain desk",
+    # #     "The [desk] has a [drawer]",
+    # #     "The [drawer] is a simple drawer",
+    # #     "The [drawer] is open",
+    # #     "The [drawer] is empty",
+    # #     "The [floor] is a plain wooden floor",
+    # #     "The [door] is a plain wooden door with a simple keyhole",
+    # #     "The [door] is closed",
+    # #     "The [door] is unlocked",
+    # #     "The [player] has a [key]",
+    # #     "The [key] is a gold key",
+    # # ]
+    #
+    #
+    # # room.execute(Command.Open(target="door"))
+    #
+    # assert room.events == [
+    #     Event.Opened(target="drawer"),
+    #     Event.Taken(target="key"),
+    # #   Event.Unlocked(target="door", using="key")
     # ]
-
-
-    # room.execute(Command.Open(target="door"))
-
-    assert room.events == [
-        Event.Opened(target="drawer"),
-        Event.Taken(target="key"),
-    #   Event.Unlocked(target="door", using="key")
-    ]
 
 #------------------------------------------------------------------------------

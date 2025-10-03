@@ -11,18 +11,8 @@ class Relationship:
         self.source = source
         self.target = target
 
-    @staticmethod
-    def from_json(data):
-        return Relationship(
-            kind=Relationship.Kind(data.get("relationship") or data.get("kind")),
-            source=data.get("source"),
-            target=data.get("target")
-        )
-
     @property
     def fact(self):
         return f"The [{self.source}] {self.kind.value} a [{self.target}]"
-
-Relationships = list[Relationship]
 
 #------------------------------------------------------------------------------

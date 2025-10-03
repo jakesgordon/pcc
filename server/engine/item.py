@@ -1,5 +1,6 @@
 from enum import Enum
 from result import Ok, Err
+from .relationship import Relationship
 from .event import Event
 
 class Item:
@@ -12,8 +13,6 @@ class Item:
         CONTAINER  = "container"     # holds items inside
         SUPPORTER  = "supporter"     # items rest on top
         READABLE   = "readable"      # has text to read
-        WEARABLE   = "wearable"      # can put on/take off
-        EDIBLE     = "edible"        # can be consumed
         TAKEN      = "taken"         # IS taken (inventory)
         CLOSED     = "closed"        # IS closed
         LOCKED     = "locked"        # IS locked
@@ -21,7 +20,10 @@ class Item:
     def __init__(self, name, description = None, traits = None):
         self.name = name
         self.description = description
-        self.traits = set(traits or [])
+        self.traits   = set(traits or [])
+        self.has      = []
+        self.contains = []
+        self.supports = []
 
     def has_trait(self, trait):
         return trait in self.traits
@@ -31,6 +33,18 @@ class Item:
 
     def remove_trait(self, trait):
         self.traits.discard(trait)
+
+    def append(self, name, relationship):
+        match relationship:
+            case Relationship.Kind.HAS:
+                if not name in self.has:
+                    self.has.append(name)
+            case Relationship.Kind.CONTAINS:
+                if not name in self.contains:
+                    self.contains.append(name)
+            case Relationship.Kind.SUPPORTS:
+                if not name in self.supports:
+                    self.supports.append(name)
 
     @property
     def is_takeable(self):
@@ -95,18 +109,10 @@ class Item:
             self.add_trait(Item.Trait.CLOSED)
             return Ok(Event.Closed(target=self.name))
 
-    @staticmethod
-    def from_json(data):
-        name = data.get("name")
-        description = data.get("description")
-        traits = [Item.Trait(t) for t in data.get("traits", [])]
-        assert name is not None
-        return Item(name=name, description=description, traits=traits)
-
 #------------------------------------------------------------------------------
 
 class Items:
-    def __init__(self, items):
+    def __init__(self, items = []):
         self._index = {item.name: item for item in items}
 
     def get(self, name):
@@ -117,9 +123,5 @@ class Items:
 
     def names(self):
         return self._index.keys()
-
-    @staticmethod
-    def from_json(data):
-        return Items(items=[Item.from_json(i) for i in data])
 
 #------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ _default:
   cd server && poetry run python bot.py
 
 @test:
-  cd server && poetry run pytest
+  cd server && poetry run pytest -v
 
 @docker-build:
   docker buildx build --platform=linux/arm64 -t "jakesgordon/jakes-test-bot:latest" --load server
