@@ -1,0 +1,39 @@
+{
+  "name": "The First Room",
+  "description": "a dusty study",
+  "items": [
+    {
+      "name": "desk",
+      "description": "a plain desk",
+      "traits": ["supporter"]
+    },
+    {
+      "name": "drawer",
+      "description": "a simple drawer",
+      "traits": ["container", "closed", "openable", "closable"]
+    },
+    {
+      "name": "key",
+      "description": "a gold key",
+      "traits": ["takeable"]
+    },
+    {
+      "name": "floor",
+      "description": "a plain wooden floor",
+      "traits": ["supporter"]
+    },
+    {
+      "name": "door",
+      "description": "a plain wooden door with a simple keyhole",
+      "traits": ["closed", "openable", "closable", "locked", "unlockable"],
+      "unlocker": ["key"]
+    }
+  ],
+  "relationships": [
+    { "source": "room",   "relationship": "has",      "target": "desk"   },
+    { "source": "room",   "relationship": "has",      "target": "floor"  },
+    { "source": "room",   "relationship": "has",      "target": "door"   },
+    { "source": "desk",   "relationship": "has",      "target": "drawer" },
+    { "source": "drawer", "relationship": "contains", "target": "key"    }
+  ]
+}

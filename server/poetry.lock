@@ -3018,6 +3018,18 @@ docs = ["numpydoc", "sphinx (!=1.3.1)"]
 tests = ["pytest (<8)", "pytest-cov", "scipy (>=1.1)"]
 
 [[package]]
+name = "result"
+version = "0.17.0"
+description = "A Rust-like result type for Python"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "result-0.17.0-py3-none-any.whl", hash = "sha256:49fd668b4951ad15800b8ccefd98b6b94effc789607e19c65064b775570933e8"},
+    {file = "result-0.17.0.tar.gz", hash = "sha256:b73da420c0cb1a3bf741dbd41ff96dedafaad6a1b3ef437a9e33e380bb0d91cf"},
+]
+
+[[package]]
 name = "rich"
 version = "14.1.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
@@ -4207,4 +4219,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "eabaea478cf07aedd2b4e58fa994f0d2692e793e978ed4b3d650d2a031ffcedd"
+content-hash = "acc242d4599ef3400a6dc51003ee0f5640e4319f038edad11c4735e5ba44eb2f"

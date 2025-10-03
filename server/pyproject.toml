@@ -13,6 +13,7 @@ pipecatcloud = "^0.2.3"
 python-dotenv = "1.0.1"
 attrs = "^25.3.0"
 cattrs = "^25.2.0"
+result = "^0.17.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
